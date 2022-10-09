@@ -8,6 +8,7 @@
 - [ ] Collision between players
   - [ ] Collision box
   - [ ] Logic to avoid overlap and implement 'push'
+- [ ] Switch player direction (based on relative position)
 - [ ] Hurt and collision boxes per animation frame
 - [ ] Hit boxes per attack animation from
 - [ ] Scrolling playfield

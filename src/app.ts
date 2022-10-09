@@ -1,5 +1,11 @@
-import { FighterSprite } from './fighterSprite.js';
-import { Sprite } from './sprite.js';
+import { CharacterSprite } from './characterSprite.js';
+import { Animation } from './animation.js';
+
+interface Gsap {
+  to(value: string, transform: unknown): void;
+}
+
+declare var gsap: Gsap;
 
 const canvas = document.querySelector('canvas')!;
 const context = canvas.getContext('2d')!;
@@ -22,148 +28,241 @@ canvas.height = 576;
 
 context.fillRect(0, 0, canvas.width, canvas.height);
 
-const swishSounnd = new Audio('audio/schwing.mpga');
+const swishSound = new Audio('audio/schwing.mpga');
 const hitSound = new Audio('audio/hit.wav');
 const deathSound = new Audio('audio/death.mp3');
 
-const background = new Sprite({
-  context,
-  position: {
-    x: 0,
-    y: 0,
+const background = new Animation(
+  {
+    offset: { x: 0, y: 0 },
+    imageSource: './img/background.png',
+    scale: 1,
+    frameCount: 1,
+    framesHold: 1,
+    repeat: true,
   },
-  imageSrc: './img/background.png',
-});
+  context
+);
 
-const shop = new Sprite({
-  context,
-  position: {
-    x: 608,
-    y: 128,
+const shop = new Animation(
+  {
+    offset: { x: 0, y: 0 },
+    imageSource: './img/shop.png',
+    scale: 2.75,
+    frameCount: 6,
+    framesHold: 5,
+    repeat: true,
   },
-  imageSrc: './img/shop.png',
-  scale: 2.75,
-  frameCount: 6,
-});
+  context
+);
 
-const player = new FighterSprite({
-  context: context,
-  colour: 'red',
-  position: {
-    x: 60,
-    y: 0,
-  },
-  velocity: {
-    x: 0,
-    y: 0,
-  },
-  attackBox: {
-    offset: {
+shop.position = {
+  x: 608,
+  y: 128,
+};
+
+const playerOne = new CharacterSprite(
+  {
+    colour: 'red',
+    size: {
+      width: 50,
+      height: 130,
+    },
+    attackBox: {
       x: 50,
       y: 30,
+      width: 180,
+      height: 70,
     },
-    width: 180,
-    height: 70,
+    animations: {
+      idle: {
+        imageSource: './img/samuraiMack/Idle.png',
+        frameCount: 8,
+        offset: {
+          x: 225,
+          y: 175,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      run: {
+        imageSource: './img/samuraiMack/Run.png',
+        frameCount: 8,
+        offset: {
+          x: 225,
+          y: 175,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      jump: {
+        imageSource: './img/samuraiMack/Jump.png',
+        frameCount: 2,
+        offset: {
+          x: 225,
+          y: 175,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      fall: {
+        imageSource: './img/samuraiMack/Fall.png',
+        frameCount: 2,
+        offset: {
+          x: 225,
+          y: 175,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      attack1: {
+        imageSource: './img/samuraiMack/Attack1.png',
+        frameCount: 6,
+        offset: {
+          x: 225,
+          y: 175,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+        attackFrame: 4,
+      },
+      takeHit: {
+        imageSource: './img/samuraiMack/Take Hit - white silhouette.png',
+        frameCount: 4,
+        offset: {
+          x: 225,
+          y: 175,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      death: {
+        imageSource: './img/samuraiMack/Death.png',
+        frameCount: 6,
+        offset: {
+          x: 225,
+          y: 175,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+    },
   },
-  sprites: {
-    idle: {
-      imageSrc: './img/samuraiMack/Idle.png',
-      frameCount: 8,
-    },
-    run: {
-      imageSrc: './img/samuraiMack/Run.png',
-      frameCount: 8,
-    },
-    jump: {
-      imageSrc: './img/samuraiMack/Jump.png',
-      frameCount: 2,
-    },
-    fall: {
-      imageSrc: './img/samuraiMack/Fall.png',
-      frameCount: 2,
-    },
-    attack1: {
-      imageSrc: './img/samuraiMack/Attack1.png',
-      frameCount: 6,
-    },
-    takeHit: {
-      imageSrc: './img/samuraiMack/Take Hit - white silhouette.png',
-      frameCount: 4,
-    },
-    death: {
-      imageSrc: './img/samuraiMack/Death.png',
-      frameCount: 6,
-    },
-  },
-  scale: 2.5,
-  offset: {
-    x: 215,
-    y: 155,
-  },
-});
+  { x: 200, y: 200 },
+  context
+);
 
-const enemy = new FighterSprite({
-  context,
-  colour: 'blue',
-  position: {
-    x: 400,
-    y: 0,
-  },
-  velocity: {
-    x: 0,
-    y: 0,
-  },
-  attackBox: {
-    offset: {
+const playerTwo = new CharacterSprite(
+  {
+    colour: 'blue',
+    size: {
+      width: 50,
+      height: 140,
+    },
+    attackBox: {
       x: -150,
       y: 30,
+      width: 150,
+      height: 70,
     },
-    width: 150,
-    height: 70,
+    animations: {
+      idle: {
+        imageSource: './img/kenji/Idle.png',
+        frameCount: 4,
+        offset: {
+          x: 215,
+          y: 180,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      run: {
+        imageSource: './img/kenji/Run.png',
+        frameCount: 8,
+        offset: {
+          x: 215,
+          y: 180,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      jump: {
+        imageSource: './img/kenji/Jump.png',
+        frameCount: 2,
+        offset: {
+          x: 215,
+          y: 180,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      fall: {
+        imageSource: './img/kenji/Fall.png',
+        frameCount: 2,
+        offset: {
+          x: 215,
+          y: 180,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      attack1: {
+        imageSource: './img/kenji/Attack1.png',
+        frameCount: 4,
+        offset: {
+          x: 215,
+          y: 180,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+        attackFrame: 1,
+      },
+      takeHit: {
+        imageSource: './img/kenji/Take hit.png',
+        frameCount: 3,
+        offset: {
+          x: 215,
+          y: 180,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+      death: {
+        imageSource: './img/kenji/Death.png',
+        frameCount: 7,
+        offset: {
+          x: 215,
+          y: 180,
+        },
+        framesHold: 5,
+        scale: 2.5,
+        repeat: true,
+      },
+    },
   },
-  sprites: {
-    idle: {
-      imageSrc: './img/kenji/Idle.png',
-      frameCount: 4,
-    },
-    run: {
-      imageSrc: './img/kenji/Run.png',
-      frameCount: 8,
-    },
-    jump: {
-      imageSrc: './img/kenji/Jump.png',
-      frameCount: 2,
-    },
-    fall: {
-      imageSrc: './img/kenji/Fall.png',
-      frameCount: 2,
-    },
-    attack1: {
-      imageSrc: './img/kenji/Attack1.png',
-      frameCount: 4,
-    },
-    takeHit: {
-      imageSrc: './img/kenji/Take hit.png',
-      frameCount: 3,
-    },
-    death: {
-      imageSrc: './img/kenji/Death.png',
-      frameCount: 7,
-    },
-  },
-  scale: 2.5,
-  offset: {
-    x: 215,
-    y: 170,
-  },
-});
+  { x: 400, y: 200 },
+  context
+);
 
 function gameStatusText() {
-  if (player.health > enemy.health) {
+  if (playerOne.health > playerTwo.health) {
     return 'Player 1 Wins';
   }
 
-  if (enemy.health > player.health) {
+  if (playerTwo.health > playerOne.health) {
     return 'Player 2 Wins';
   }
 
@@ -171,12 +270,12 @@ function gameStatusText() {
 }
 
 let timerValue = 100;
-let timeoutId;
+let timeoutId: number | undefined;
 
 function endGame() {
   clearTimeout(timeoutId);
 
-  const statusElem = document.querySelector('#game-status');
+  const statusElem = document.querySelector<HTMLElement>('#game-status');
   statusElem.innerHTML = gameStatusText();
   statusElem.style.display = 'flex';
 }
@@ -184,7 +283,7 @@ function endGame() {
 function runTimer() {
   if (timerValue > 0) {
     timerValue -= 1;
-    document.querySelector('#timer').innerHTML = timerValue;
+    document.querySelector('#timer').innerHTML = timerValue.toString();
     timeoutId = setTimeout(runTimer, 1000);
   }
 
@@ -207,49 +306,58 @@ function renderLoop() {
 
   // Collision detection
   if (
-    player.isAttacking &&
-    player.currentFrame === 4 &&
-    rectangularCollision({ rect1: player.attackBox, rect2: enemy })
+    playerOne.isAttackFrame() &&
+    rectangularCollision({
+      rect1: playerOne.attackBox,
+      rect2: playerTwo.hurtBox,
+    })
   ) {
-    enemy.takeHit();
-    player.isAttacking = false;
-    gsap.to('#p2-health', { width: `${enemy.health}%` });
+    playerTwo.takeHit();
+    playerOne.isAttacking = false;
+    gsap.to('#p2-health', { width: `${playerTwo.health}%` });
 
     hitSound.currentTime = 0;
     hitSound.play();
-    if (enemy.health <= 0) {
+    if (playerTwo.health <= 0) {
       deathSound.currentTime = 0;
       deathSound.play();
     }
   }
 
   if (
-    enemy.isAttacking &&
-    enemy.currentFrame === 2 &&
-    rectangularCollision({ rect1: enemy.attackBox, rect2: player })
+    playerTwo.isAttackFrame() &&
+    rectangularCollision({
+      rect1: playerTwo.attackBox,
+      rect2: playerOne.hurtBox,
+    })
   ) {
-    player.takeHit();
-    enemy.isAttacking = false;
-    gsap.to('#p1-health', { width: `${player.health}%` });
+    playerOne.takeHit();
+    playerTwo.isAttacking = false;
+    gsap.to('#p1-health', { width: `${playerOne.health}%` });
 
     hitSound.currentTime = 0;
     hitSound.play();
-    if (player.health <= 0) {
+    if (playerOne.health <= 0) {
       deathSound.currentTime = 0;
       deathSound.play();
     }
   }
 
-  if (!player.health || !enemy.health) {
+  if (!playerOne.health || !playerTwo.health) {
     endGame();
   }
 
   context.fillStyle = 'black';
   context.fillRect(0, 0, canvas.width, canvas.height);
-  background.update();
   shop.update();
-  player.update(playerInput[0]);
-  enemy.update(playerInput[1]);
+
+  playerOne.update(playerInput[0]);
+  playerTwo.update(playerInput[1]);
+
+  background.draw();
+  shop.draw();
+  playerOne.draw();
+  playerTwo.draw();
 }
 
 runTimer();
@@ -269,9 +377,9 @@ window.addEventListener('keydown', (event) => {
       playerInput[0].jump = true;
       break;
     case ' ':
-      player.attack();
-      swishSounnd.currentTime = 0;
-      swishSounnd.play();
+      playerOne.attack();
+      swishSound.currentTime = 0;
+      swishSound.play();
       break;
   }
 
@@ -286,9 +394,9 @@ window.addEventListener('keydown', (event) => {
       playerInput[1].jump = true;
       break;
     case 'Enter':
-      enemy.attack();
-      swishSounnd.currentTime = 0;
-      swishSounnd.play();
+      playerTwo.attack();
+      swishSound.currentTime = 0;
+      swishSound.play();
       break;
   }
 });
