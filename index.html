@@ -1,0 +1,33 @@
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  />
+  <link href="index.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="container">
+    <div class="hud">
+      <div class="health-container left">
+        <div class="health-bar"></div>
+        <div id="p1-health" class="health-value"></div>
+      </div>
+      <div id="timer" class="timer">10</div>
+      <div class="health-container right">
+        <div class="health-bar"></div>
+        <div id="p2-health" class="health-value"></div>
+      </div>
+    </div>
+    <div id="game-status" class="game-status"></div>
+    <canvas></canvas>
+  </div>
+</body>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.2/gsap.min.js"
+  integrity="sha512-gsEItzcNkWxfxHjr4BaEZAd9YuRWYjxnj7c/yukcZ0/nWehUb5TjJNyyv1ApCU2DFH/qgw+stFZHPOKnoQnIuQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script type="module" src="./dist/app.js"></script>
