@@ -12,9 +12,9 @@ export const playerOneConfiguration: ICharacterDefinition = {
   },
   attackBox: {
     x: 50,
-    y: 30,
-    width: 180,
-    height: 70,
+    y: 15,
+    width: 190,
+    height: 60,
   },
   animations: {
     idle: {
@@ -105,10 +105,10 @@ export const playerTwoConfiguration: ICharacterDefinition = {
     height: 140,
   },
   attackBox: {
-    x: -150,
-    y: 30,
-    width: 150,
-    height: 70,
+    x: -170,
+    y: 40,
+    width: 170,
+    height: 50,
   },
   animations: {
     idle: {
