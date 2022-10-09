@@ -201,16 +201,20 @@ export class CharacterSprite {
       this._isAttacking = false;
     }
 
+    this.applyVelocity();
+    this.applyGravity();
+    this.ensureInPlayFieldBounds();
+    this.updateAttackBox();
+
     this._currentAnimation.update();
+  }
 
-    this._attackBox.position.x =
-      this._currentAnimation.position.x + this._attackBox.offset.x;
-    this._attackBox.position.y =
-      this._currentAnimation.position.y + this._attackBox.offset.y;
-
+  private applyVelocity(): void {
     this._currentAnimation.position.x += this._velocity.x;
     this._currentAnimation.position.y += this._velocity.y;
+  }
 
+  private applyGravity(): void {
     if (
       this._currentAnimation.position.y + this._definition.size.height >=
       this._context.canvas.height - 96
@@ -221,6 +225,25 @@ export class CharacterSprite {
     } else {
       this._velocity.y += gravity;
     }
+  }
+
+  private ensureInPlayFieldBounds(): void {
+    if (this._currentAnimation.position.x < 0) {
+      this._currentAnimation.position.x = 0;
+    } else if (
+      this._currentAnimation.position.x + this._definition.size.width >=
+      this._context.canvas.width
+    ) {
+      this._currentAnimation.position.x =
+        this._context.canvas.width - this._definition.size.width;
+    }
+  }
+
+  private updateAttackBox(): void {
+    this._attackBox.position.x =
+      this._currentAnimation.position.x + this._attackBox.offset.x;
+    this._attackBox.position.y =
+      this._currentAnimation.position.y + this._attackBox.offset.y;
   }
 
   private switchSprite(spriteName: string): void {
