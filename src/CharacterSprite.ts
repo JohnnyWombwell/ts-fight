@@ -90,6 +90,19 @@ export class CharacterSprite {
     this._isAttacking = attacking;
   }
 
+  public get velocity(): IVelocity {
+    return this._velocity;
+  }
+
+  public set position(position: IPosition) {
+    this._currentAnimation.position = position;
+    this.updateAttackBox();
+  }
+
+  public get position(): IPosition {
+    return this._currentAnimation.position;
+  }
+
   public isAttackFrame(): boolean {
     if (
       this._isAttacking &&

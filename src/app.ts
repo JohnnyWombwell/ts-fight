@@ -125,6 +125,80 @@ function processAttack(
   }
 }
 
+function processPushCollision(left: CharacterSprite, right: CharacterSprite) {
+  if (left.velocity.x >= 0 && right.velocity.x >= 0) {
+    right.position = {
+      ...right.position,
+      x: left.hurtBox.x + left.hurtBox.width,
+    };
+  } else if (left.velocity.x <= 0 && right.velocity.x <= 0) {
+    left.position = {
+      ...left.position,
+      x: right.hurtBox.x - left.hurtBox.width,
+    };
+  } else {
+    // else pushing against each other - split the overlap equally
+    const overlap = left.hurtBox.x + left.hurtBox.width - right.hurtBox.x;
+    left.position = {
+      ...left.position,
+      x: left.position.x - overlap / 2,
+    };
+
+    right.position = {
+      ...right.position,
+      x: right.position.x + overlap / 2,
+    };
+  }
+}
+
+function processPushCollisions() {
+  if (!rectangularCollision(playerOne.hurtBox, playerTwo.hurtBox)) {
+    return;
+  }
+
+  if (playerOne.position.x <= playerTwo.position.x) {
+    processPushCollision(playerOne, playerTwo);
+  } else {
+    processPushCollision(playerTwo, playerOne);
+  }
+}
+
+function processWallBound(left: CharacterSprite, right: CharacterSprite) {
+  if (right.hurtBox.x + right.hurtBox.width > canvas.width) {
+    right.position = {
+      ...right.position,
+      x: canvas.width - right.hurtBox.width,
+    };
+
+    left.position = {
+      ...left.position,
+      x: canvas.width - right.hurtBox.width - left.hurtBox.width,
+    };
+  } else if (left.hurtBox.x < 0) {
+    left.position = {
+      ...left.position,
+      x: 0,
+    };
+
+    right.position = {
+      ...right.position,
+      x: left.hurtBox.width,
+    };
+  }
+}
+
+function processWallBounds() {
+  if (!rectangularCollision(playerOne.hurtBox, playerTwo.hurtBox)) {
+    return;
+  }
+
+  if (playerOne.position.x <= playerTwo.position.x) {
+    processWallBound(playerOne, playerTwo);
+  } else {
+    processWallBound(playerTwo, playerOne);
+  }
+}
+
 function renderLoop() {
   window.requestAnimationFrame(renderLoop);
 
@@ -140,6 +214,9 @@ function renderLoop() {
   }
   playerOne.update(playerInput[0]);
   playerTwo.update(playerInput[1]);
+
+  processPushCollisions();
+  processWallBounds();
 
   for (const sprite of sceneSprites) {
     sprite.draw();
