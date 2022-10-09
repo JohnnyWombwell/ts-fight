@@ -1,5 +1,11 @@
 import { CharacterSprite } from './characterSprite.js';
 import { Animation } from './animation.js';
+import { rectangularCollision } from './geometry.js';
+import {
+  playerOneConfiguration,
+  playerTwoConfiguration,
+  sceneSpriteConfiguration,
+} from './resources.js';
 
 interface Gsap {
   to(value: string, transform: unknown): void;
@@ -32,227 +38,22 @@ const swishSound = new Audio('audio/schwing.mpga');
 const hitSound = new Audio('audio/hit.wav');
 const deathSound = new Audio('audio/death.mp3');
 
-const background = new Animation(
-  {
-    offset: { x: 0, y: 0 },
-    imageSource: './img/background.png',
-    scale: 1,
-    frameCount: 1,
-    framesHold: 1,
-    repeat: true,
-  },
-  context
-);
-
-const shop = new Animation(
-  {
-    offset: { x: 0, y: 0 },
-    imageSource: './img/shop.png',
-    scale: 2.75,
-    frameCount: 6,
-    framesHold: 5,
-    repeat: true,
-  },
-  context
-);
-
-shop.position = {
-  x: 608,
-  y: 128,
-};
+const sceneSprites = sceneSpriteConfiguration.map((c) => {
+  const a = new Animation(c.resource, context);
+  if (c.position) {
+    a.position = c.position;
+  }
+  return a;
+});
 
 const playerOne = new CharacterSprite(
-  {
-    colour: 'red',
-    size: {
-      width: 50,
-      height: 130,
-    },
-    attackBox: {
-      x: 50,
-      y: 30,
-      width: 180,
-      height: 70,
-    },
-    animations: {
-      idle: {
-        imageSource: './img/samuraiMack/Idle.png',
-        frameCount: 8,
-        offset: {
-          x: 225,
-          y: 175,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      run: {
-        imageSource: './img/samuraiMack/Run.png',
-        frameCount: 8,
-        offset: {
-          x: 225,
-          y: 175,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      jump: {
-        imageSource: './img/samuraiMack/Jump.png',
-        frameCount: 2,
-        offset: {
-          x: 225,
-          y: 175,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      fall: {
-        imageSource: './img/samuraiMack/Fall.png',
-        frameCount: 2,
-        offset: {
-          x: 225,
-          y: 175,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      attack1: {
-        imageSource: './img/samuraiMack/Attack1.png',
-        frameCount: 6,
-        offset: {
-          x: 225,
-          y: 175,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-        attackFrame: 4,
-      },
-      takeHit: {
-        imageSource: './img/samuraiMack/Take Hit - white silhouette.png',
-        frameCount: 4,
-        offset: {
-          x: 225,
-          y: 175,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      death: {
-        imageSource: './img/samuraiMack/Death.png',
-        frameCount: 6,
-        offset: {
-          x: 225,
-          y: 175,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-    },
-  },
+  playerOneConfiguration,
   { x: 200, y: 200 },
   context
 );
 
 const playerTwo = new CharacterSprite(
-  {
-    colour: 'blue',
-    size: {
-      width: 50,
-      height: 140,
-    },
-    attackBox: {
-      x: -150,
-      y: 30,
-      width: 150,
-      height: 70,
-    },
-    animations: {
-      idle: {
-        imageSource: './img/kenji/Idle.png',
-        frameCount: 4,
-        offset: {
-          x: 215,
-          y: 180,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      run: {
-        imageSource: './img/kenji/Run.png',
-        frameCount: 8,
-        offset: {
-          x: 215,
-          y: 180,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      jump: {
-        imageSource: './img/kenji/Jump.png',
-        frameCount: 2,
-        offset: {
-          x: 215,
-          y: 180,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      fall: {
-        imageSource: './img/kenji/Fall.png',
-        frameCount: 2,
-        offset: {
-          x: 215,
-          y: 180,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      attack1: {
-        imageSource: './img/kenji/Attack1.png',
-        frameCount: 4,
-        offset: {
-          x: 215,
-          y: 180,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-        attackFrame: 1,
-      },
-      takeHit: {
-        imageSource: './img/kenji/Take hit.png',
-        frameCount: 3,
-        offset: {
-          x: 215,
-          y: 180,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-      death: {
-        imageSource: './img/kenji/Death.png',
-        frameCount: 7,
-        offset: {
-          x: 215,
-          y: 180,
-        },
-        framesHold: 5,
-        scale: 2.5,
-        repeat: true,
-      },
-    },
-  },
+  playerTwoConfiguration,
   { x: 400, y: 200 },
   context
 );
@@ -276,6 +77,10 @@ function endGame() {
   clearTimeout(timeoutId);
 
   const statusElem = document.querySelector<HTMLElement>('#game-status');
+  if (!statusElem) {
+    return;
+  }
+
   statusElem.innerHTML = gameStatusText();
   statusElem.style.display = 'flex';
 }
@@ -283,7 +88,13 @@ function endGame() {
 function runTimer() {
   if (timerValue > 0) {
     timerValue -= 1;
-    document.querySelector('#timer').innerHTML = timerValue.toString();
+
+    const timerElem = document.querySelector('#timer');
+    if (!timerElem) {
+      return;
+    }
+
+    timerElem.innerHTML = timerValue.toString();
     timeoutId = setTimeout(runTimer, 1000);
   }
 
@@ -292,25 +103,13 @@ function runTimer() {
   }
 }
 
-function rectangularCollision({ rect1, rect2 }) {
-  return (
-    rect1.position.x + rect1.width >= rect2.position.x &&
-    rect1.position.x <= rect2.position.x + rect2.width &&
-    rect1.position.y + rect1.width >= rect2.position.y &&
-    rect1.position.y <= rect2.position.y + rect2.height
-  );
-}
-
 function renderLoop() {
   window.requestAnimationFrame(renderLoop);
 
   // Collision detection
   if (
     playerOne.isAttackFrame() &&
-    rectangularCollision({
-      rect1: playerOne.attackBox,
-      rect2: playerTwo.hurtBox,
-    })
+    rectangularCollision(playerOne.attackBox, playerTwo.hurtBox)
   ) {
     playerTwo.takeHit();
     playerOne.isAttacking = false;
@@ -326,10 +125,7 @@ function renderLoop() {
 
   if (
     playerTwo.isAttackFrame() &&
-    rectangularCollision({
-      rect1: playerTwo.attackBox,
-      rect2: playerOne.hurtBox,
-    })
+    rectangularCollision(playerTwo.attackBox, playerOne.hurtBox)
   ) {
     playerOne.takeHit();
     playerTwo.isAttacking = false;
@@ -347,15 +143,16 @@ function renderLoop() {
     endGame();
   }
 
-  context.fillStyle = 'black';
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  shop.update();
+  for (const sprite of sceneSprites) {
+    sprite.update();
+  }
 
   playerOne.update(playerInput[0]);
   playerTwo.update(playerInput[1]);
 
-  background.draw();
-  shop.draw();
+  for (const sprite of sceneSprites) {
+    sprite.draw();
+  }
   playerOne.draw();
   playerTwo.draw();
 }

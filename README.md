@@ -17,5 +17,6 @@
 ## Tasks
 
 - [ ] Migrate to typescript
+- [ ] Rework render loop as per zinac
 - [ ] Migrate to use a rendering / game framework (probably Phasor 3)
 - [ ] Start features above

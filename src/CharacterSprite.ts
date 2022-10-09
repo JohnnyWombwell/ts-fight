@@ -1,6 +1,6 @@
 import { ICharacterDefinition } from './resourceDefinitions.js';
 import { Animation } from './animation.js';
-import { IPosition } from './geometry.js';
+import { IPosition, IRectangle } from './geometry.js';
 
 const gravity = 0.8;
 
@@ -36,7 +36,7 @@ export class CharacterSprite {
     definition: ICharacterDefinition,
     initialPostion: IPosition,
     context: CanvasRenderingContext2D,
-    renderBoxes: boolean = false
+    renderBoxes: boolean = true
   ) {
     this._definition = definition;
     this._context = context;
@@ -64,19 +64,22 @@ export class CharacterSprite {
     return this._health;
   }
 
-  public get hurtBox(): unknown {
+  public get hurtBox(): IRectangle {
     return {
-      position: {
-        x: this._currentAnimation.position.x,
-        y: this._currentAnimation.position.y,
-      },
+      x: this._currentAnimation.position.x,
+      y: this._currentAnimation.position.y,
       width: this._definition.size.width,
       height: this._definition.size.height,
     };
   }
 
-  public get attackBox(): unknown {
-    return this._attackBox;
+  public get attackBox(): IRectangle {
+    return {
+      x: this._attackBox.position.x,
+      y: this._attackBox.position.y,
+      width: this._attackBox.width,
+      height: this._attackBox.height,
+    };
   }
 
   public get isAttacking() {
