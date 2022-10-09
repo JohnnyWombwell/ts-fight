@@ -36,7 +36,7 @@ export class CharacterSprite {
     definition: ICharacterDefinition,
     initialPostion: IPosition,
     context: CanvasRenderingContext2D,
-    renderBoxes: boolean = true
+    renderBoxes: boolean = false
   ) {
     this._definition = definition;
     this._context = context;

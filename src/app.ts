@@ -103,41 +103,33 @@ function runTimer() {
   }
 }
 
+function processAttack(
+  attacker: CharacterSprite,
+  defender: CharacterSprite,
+  defenderHealthBar: string
+) {
+  if (
+    attacker.isAttackFrame() &&
+    rectangularCollision(attacker.attackBox, defender.hurtBox)
+  ) {
+    defender.takeHit();
+    attacker.isAttacking = false;
+    gsap.to(defenderHealthBar, { width: `${defender.health}%` });
+
+    hitSound.currentTime = 0;
+    hitSound.play();
+    if (defender.health <= 0) {
+      deathSound.currentTime = 0;
+      deathSound.play();
+    }
+  }
+}
+
 function renderLoop() {
   window.requestAnimationFrame(renderLoop);
 
-  // Collision detection
-  if (
-    playerOne.isAttackFrame() &&
-    rectangularCollision(playerOne.attackBox, playerTwo.hurtBox)
-  ) {
-    playerTwo.takeHit();
-    playerOne.isAttacking = false;
-    gsap.to('#p2-health', { width: `${playerTwo.health}%` });
-
-    hitSound.currentTime = 0;
-    hitSound.play();
-    if (playerTwo.health <= 0) {
-      deathSound.currentTime = 0;
-      deathSound.play();
-    }
-  }
-
-  if (
-    playerTwo.isAttackFrame() &&
-    rectangularCollision(playerTwo.attackBox, playerOne.hurtBox)
-  ) {
-    playerOne.takeHit();
-    playerTwo.isAttacking = false;
-    gsap.to('#p1-health', { width: `${playerOne.health}%` });
-
-    hitSound.currentTime = 0;
-    hitSound.play();
-    if (playerOne.health <= 0) {
-      deathSound.currentTime = 0;
-      deathSound.play();
-    }
-  }
+  processAttack(playerOne, playerTwo, '#p2-health');
+  processAttack(playerTwo, playerOne, '#p1-health');
 
   if (!playerOne.health || !playerTwo.health) {
     endGame();
@@ -146,7 +138,6 @@ function renderLoop() {
   for (const sprite of sceneSprites) {
     sprite.update();
   }
-
   playerOne.update(playerInput[0]);
   playerTwo.update(playerInput[1]);
 
