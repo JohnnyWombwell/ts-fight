@@ -125,6 +125,33 @@ function processAttack(
   }
 }
 
+function reprocessWallBoundAfterPush(
+  left: CharacterSprite,
+  right: CharacterSprite
+) {
+  if (right.hurtBox.x + right.hurtBox.width > canvas.width) {
+    right.position = {
+      ...right.position,
+      x: canvas.width - right.hurtBox.width,
+    };
+
+    left.position = {
+      ...left.position,
+      x: canvas.width - right.hurtBox.width - left.hurtBox.width,
+    };
+  } else if (left.hurtBox.x < 0) {
+    left.position = {
+      ...left.position,
+      x: 0,
+    };
+
+    right.position = {
+      ...right.position,
+      x: left.hurtBox.width,
+    };
+  }
+}
+
 function processPushCollision(left: CharacterSprite, right: CharacterSprite) {
   if (left.velocity.x >= 0 && right.velocity.x >= 0) {
     right.position = {
@@ -149,6 +176,8 @@ function processPushCollision(left: CharacterSprite, right: CharacterSprite) {
       x: right.position.x + overlap / 2,
     };
   }
+
+  reprocessWallBoundAfterPush(left, right);
 }
 
 function processPushCollisions() {
@@ -160,42 +189,6 @@ function processPushCollisions() {
     processPushCollision(playerOne, playerTwo);
   } else {
     processPushCollision(playerTwo, playerOne);
-  }
-}
-
-function processWallBound(left: CharacterSprite, right: CharacterSprite) {
-  if (right.hurtBox.x + right.hurtBox.width > canvas.width) {
-    right.position = {
-      ...right.position,
-      x: canvas.width - right.hurtBox.width,
-    };
-
-    left.position = {
-      ...left.position,
-      x: canvas.width - right.hurtBox.width - left.hurtBox.width,
-    };
-  } else if (left.hurtBox.x < 0) {
-    left.position = {
-      ...left.position,
-      x: 0,
-    };
-
-    right.position = {
-      ...right.position,
-      x: left.hurtBox.width,
-    };
-  }
-}
-
-function processWallBounds() {
-  if (!rectangularCollision(playerOne.hurtBox, playerTwo.hurtBox)) {
-    return;
-  }
-
-  if (playerOne.position.x <= playerTwo.position.x) {
-    processWallBound(playerOne, playerTwo);
-  } else {
-    processWallBound(playerTwo, playerOne);
   }
 }
 
@@ -216,7 +209,6 @@ function renderLoop() {
   playerTwo.update(playerInput[1]);
 
   processPushCollisions();
-  processWallBounds();
 
   for (const sprite of sceneSprites) {
     sprite.draw();

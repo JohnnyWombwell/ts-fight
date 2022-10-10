@@ -19,6 +19,8 @@ Attempting to improve my Typescript skills with a simple fighting game.
 - [ ] Hit boxes per attack animation from
 - [ ] Scrolling playfield
 - [x] Walls to left and right
+- [ ] Event emitter for accurate processing of events and state changes
+      (e.g. playing sound effects)
 - [ ] Peripherals other than keyboard
 - [ ] Distributed multiplayer game
 - [ ] Assets
