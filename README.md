@@ -1,4 +1,10 @@
+# TS Fight
+
+Attempting to improve my Typescript skills with a simple fighting game.
+
 ## Features
+
+**Proposed features that may or may not see the light of day**
 
 - [ ] Game state:
   - [ ] Idle
@@ -19,8 +25,10 @@
 
 ## Tasks
 
-- [x] Migrate to typescript
-- [ ] guthub repo
-- [ ] Rework render loop as per zinac
+- [x] Migrate from js to typescript
+- [x] github repo
 - [ ] Migrate to use a rendering / game framework (probably Phasor 3)
+- [ ] Automated tests
+- [ ] Rework render loop as per zinac
 - [ ] Start features above
+- [ ] Automated build
